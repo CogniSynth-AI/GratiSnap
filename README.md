@@ -1,1 +1,2 @@
 # GratiSnap
+Funny gratitude snap
