@@ -1,29 +1,30 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import { auth } from '../firebase'
+import { signup } from '../firebase'
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false);
 
-  const handleSignUp = () =>{
-    auth
-    .createUserWithEmailAndPassword(email, password)
-    .then(userCredentials => {
-        const user = userCredentials.user;
-        console.log('Registered with:', user.email);
-    })
-    .catch(error => alert(error.message))
+  async function handleSignUp () {
+    setLoading(true);
+    try{
+        await signup(email, password);
+    } catch {
+        alert("Error");
+    }
+    setLoading(false);
   }
-
-  const handleLogin = () => {
-    auth
-        .signInWithEmailAndPassword(email, password)
-        .then(userCredentials => {
-            const user = userCredentials.user;
-            console.log('Logged in with:', user.email);
-        })
-        .catch(error => alert(error.message))
+    
+  async function handleLogin () {
+    setLoading(true);
+    try{
+        await login(email, password);
+    }catch{
+        alert("Error");
+    }
+    setLoading(false);
   }
 
   return (
@@ -55,6 +56,7 @@ const LoginScreen = () => {
                 <Text style = {styles.buttonText}>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity
+                disabled = {loading}
                 onPress = {handleSignUp}
                 style = {[styles.button, styles.buttonOutline]}
             >
