@@ -1,31 +1,41 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
-import { signup } from '../firebase'
+import React, { useEffect, useState } from 'react'
+import { login, signup, auth } from '../firebase'
+import { useNavigation } from '@react-navigation/core'
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false);
+  const navigation = useNavigation()
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      console.log("Auth state changed:", user);
+      if (user) {
+        navigation.navigate("Home");
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   async function handleSignUp () {
-    setLoading(true);
     try{
         await signup(email, password);
     } catch {
         alert("Error");
     }
-    setLoading(false);
   }
-    
+
   async function handleLogin () {
-    setLoading(true);
     try{
         await login(email, password);
+        return("Logged in");
     }catch{
         alert("Error");
     }
-    setLoading(false);
   }
+  
 
   return (
     <KeyboardAvoidingView
@@ -56,7 +66,6 @@ const LoginScreen = () => {
                 <Text style = {styles.buttonText}>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity
-                disabled = {loading}
                 onPress = {handleSignUp}
                 style = {[styles.button, styles.buttonOutline]}
             >
