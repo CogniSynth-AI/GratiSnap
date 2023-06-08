@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { login, signup, auth } from '../firebase'
 import { useNavigation } from '@react-navigation/core'
 
+
+
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -19,24 +21,25 @@ const LoginScreen = () => {
     return unsubscribe;
   }, []);
 
-  async function handleSignUp () {
-    try{
-        await signup(email, password);
-    } catch {
-        alert("Error");
-    }
-  }
 
   async function handleLogin () {
     try{
         await login(email, password);
+        navigation.navigate('Home')
         return("Logged in");
     }catch{
         alert("Error");
     }
   }
   
-
+  async function handleRegistration () {
+    try{
+        await signup(email, password);
+        return("Logged in");
+    }catch{
+        alert("Error");
+    }
+  }
   return (
     <KeyboardAvoidingView
         style = {styles.container}
@@ -66,7 +69,7 @@ const LoginScreen = () => {
                 <Text style = {styles.buttonText}>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity
-                onPress = {handleSignUp}
+                onPress = {handleRegistration}
                 style = {[styles.button, styles.buttonOutline]}
             >
                 <Text style = {styles.buttonOutlineText}>Register</Text>
